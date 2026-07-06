@@ -32,7 +32,6 @@ export default function AIChat({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const bottomRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { isSpeaking, isSupported: ttsSupported, speak, stop } = useTextToSpeech(language);

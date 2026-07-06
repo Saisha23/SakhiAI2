@@ -11,11 +11,20 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from routes.analyze import router as analyze_router
-from services.language_service import list_supported
-from services.gemini_service import GeminiServiceError
+try:
+    from backend.routes.analyze import router as analyze_router
+    from backend.services.language_service import list_supported
+    from backend.services.gemini_service import GeminiServiceError
+except ImportError:
+    from routes.analyze import router as analyze_router
+    from services.language_service import list_supported
+    from services.gemini_service import GeminiServiceError
 
-load_dotenv()
+backend_env = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(backend_env):
+    load_dotenv(backend_env)
+else:
+    load_dotenv()
 
 # Configure logging
 logging.basicConfig(

@@ -1,8 +1,15 @@
 from fastapi import APIRouter, HTTPException
-from models.request_models import AnalyzeRequest, AnalyzeResponse, ChatRequest, ChatResponse
-from services.gemini_service import analyze_symptoms, chat_response, GeminiServiceError
-from services.report_service import generate_report, build_report_json
-from services.language_service import detect_language, get_language_name, sanitize_input
+
+try:
+    from backend.models.request_models import AnalyzeRequest, AnalyzeResponse, ChatRequest, ChatResponse
+    from backend.services.gemini_service import analyze_symptoms, chat_response, GeminiServiceError
+    from backend.services.report_service import generate_report, build_report_json
+    from backend.services.language_service import detect_language, get_language_name, sanitize_input
+except ImportError:
+    from models.request_models import AnalyzeRequest, AnalyzeResponse, ChatRequest, ChatResponse
+    from services.gemini_service import analyze_symptoms, chat_response, GeminiServiceError
+    from services.report_service import generate_report, build_report_json
+    from services.language_service import detect_language, get_language_name, sanitize_input
 
 router = APIRouter()
 

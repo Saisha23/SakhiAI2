@@ -1,11 +1,31 @@
 {
-  "buildCommand": "cd project && npm install && npm run build",
-  "outputDirectory": "project/dist",
-  "framework": "vite",
-  "env": {
-    "VITE_API_URL": {
-      "description": "Backend API URL (e.g., https://sakhi-backend.onrender.com)"
+  "version": 3,
+  "builds": [
+    {
+      "src": "project/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    },
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/project/dist/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "/api"
   },
-  "envPrefix": "VITE_"
+  "envPrefix": ["VITE_"]
 }

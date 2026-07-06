@@ -9,10 +9,18 @@ from typing import Any, Optional
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-from utils.prompts import get_analysis_prompts, get_chat_prompts
-from services.language_service import detect_language, get_language_name, sanitize_input
+try:
+    from backend.utils.prompts import get_analysis_prompts, get_chat_prompts
+    from backend.services.language_service import detect_language, get_language_name, sanitize_input
+except ImportError:
+    from utils.prompts import get_analysis_prompts, get_chat_prompts
+    from services.language_service import detect_language, get_language_name, sanitize_input
 
-load_dotenv()
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+else:
+    load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +62,10 @@ def _extract_json(text: str) -> dict[str, Any]:
 
 def _fallback_analysis(text: str, language_code: str, pregnant: bool) -> dict[str, Any]:
     """Rule-based fallback when Gemini is unavailable."""
-    from services.risk_engine import detect_emergency_keywords, merge_risk
+    try:
+        from backend.services.risk_engine import detect_emergency_keywords, merge_risk
+    except ImportError:
+        from services.risk_engine import detect_emergency_keywords, merge_risk
 
     is_emergency, _ = detect_emergency_keywords(text, pregnant)
     base = {
@@ -120,7 +131,10 @@ def analyze_symptoms(
         logger.warning("Gemini analysis failed, using fallback: %s", exc)
         data = _fallback_analysis(text, detected, pregnant)
 
-    from services.risk_engine import merge_risk
+    try:
+        from backend.services.risk_engine import merge_risk
+    except ImportError:
+        from services.risk_engine import merge_risk
 
     merged = merge_risk(data, text, pregnant, selected_symptoms)
     data.update(merged)

@@ -4,11 +4,10 @@ import type {
   ChatRequest,
   ChatResponse,
   HealthResponse,
-  ApiError as ApiErrorType,
 } from '../types/api';
 import { ApiError } from '../types/api';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 const TIMEOUT_MS = 30000;
 
 async function fetchWithTimeout(url: string, options: RequestInit): Promise<Response> {
@@ -69,6 +68,8 @@ export const apiService = {
         text: params.text,
         language: params.language,
         pregnant: params.pregnant || false,
+        selected_symptoms: params.selected_symptoms,
+        body_part: params.body_part,
       }),
     });
   },

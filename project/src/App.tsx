@@ -27,7 +27,7 @@ function App() {
   });
   const [aiResult, setAiResult] = useState<AIAnalysisResult | null>(null);
   const [usedFallback, setUsedFallback] = useState(false);
-  const { analyze, loading: analyzeLoading, error: analyzeError } = useAnalyzeSymptoms();
+  const { analyze } = useAnalyzeSymptoms();
 
   const updateInput = (updates: Partial<UserInput>) => {
     setUserInput(prev => ({ ...prev, ...updates }));
