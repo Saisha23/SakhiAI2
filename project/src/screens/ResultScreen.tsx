@@ -1,11 +1,11 @@
 import type { Language, UserInput, Result, AIAnalysisResult } from '../types';
-import { getT } from '../utils/i18n';
+import { getT, tStr } from '../utils/i18n';
 import { generateResult } from '../utils/resultEngine';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
-import { detectEmergency, getEmergencySeverity } from '../utils/emergencyDetection';
+import { detectEmergency } from '../utils/emergencyDetection';
 import EmergencyBanner from '../components/EmergencyBanner';
-import ChatPanel from '../components/ChatPanel';
 import AIChat from '../components/AIChat';
+import { getSymptomName } from '../data/symptomTranslations';
 import '../components/AIComponents.css';
 
 
@@ -77,6 +77,22 @@ function ResultScreen({
     }
   };
 
+  const getRiskBadgeLabel = (urgency: string) => {
+    switch (urgency) {
+      case 'urgent': return tStr(t, 'riskEmergency', 'Emergency');
+      case 'attention': return tStr(t, 'riskAttention', 'Attention');
+      case 'normal': return tStr(t, 'riskLow', 'Low');
+      default: return tStr(t, 'riskUnknown', 'Unknown');
+    }
+  };
+
+  const summaryData = {
+    symptoms: userInput.selectedSymptoms.map((id) => getSymptomName(id, language === 'auto' ? 'en' : language)),
+    assessment: aiResult?.explanation || result.explanation || tStr(t, 'quickSummary', 'Sakhi reviewed your selected symptoms and provided a concise assessment.'),
+    riskLabel: getRiskBadgeLabel(result.urgency),
+    riskColor: getUrgencyColor(result.urgency),
+  };
+
   const getRiskLevel = (score: number) => {
     if (score >= 70) return t.riskHigh as string;
     if (score >= 40) return t.riskModerate as string;
@@ -115,11 +131,37 @@ function ResultScreen({
         )}
 
         <div className="result-header">
-          <div
-            className="urgency-badge"
-            style={{ backgroundColor: getUrgencyColor(result.urgency) }}
-          >
-            {getUrgencyLabel(result.urgency)}
+          <div className="dual-badges">
+            <div
+              className="urgency-badge"
+              style={{ backgroundColor: getUrgencyColor(result.urgency) }}
+            >
+              {getUrgencyLabel(result.urgency)}
+            </div>
+            <div
+              className="risk-pill"
+              style={{ backgroundColor: summaryData.riskColor }}
+            >
+              {summaryData.riskLabel}
+            </div>
+          </div>
+        </div>
+
+        <div className="chat-summary-card">
+          <div className="chat-summary-row">
+            <div>
+              <div className="summary-label">{t.selectedSymptoms as string}</div>
+              <div className="summary-text">
+                {summaryData.symptoms.length > 0 ? summaryData.symptoms.join(', ') : t.noSymptoms as string}
+              </div>
+            </div>
+            <div className="summary-pill" style={{ backgroundColor: summaryData.riskColor }}>
+              {summaryData.riskLabel}
+            </div>
+          </div>
+          <div className="summary-assessment">
+            <div className="summary-label">{tStr(t, 'aiAssessment', 'AI assessment')}</div>
+            <p>{summaryData.assessment}</p>
           </div>
         </div>
 
@@ -162,7 +204,7 @@ function ResultScreen({
 
         {aiResult && aiResult.possible_conditions.length > 0 && (
           <section className="result-section report-card">
-            <h3 className="section-title">{t.possibleConditions as string}</h3>
+            <h3 className="section-title">{tStr(t, 'possibleCauses', 'Possible Causes')}</h3>
             <ul className="recommendation-list">
               {aiResult.possible_conditions.map((c, i) => (
                 <li key={i} className="recommendation-item">{c}</li>
@@ -170,6 +212,18 @@ function ResultScreen({
             </ul>
           </section>
         )}
+
+        <section className="result-section report-card severity-section">
+          <h3 className="section-title">{t.severity as string}</h3>
+          <div className="severity-card">
+            <span className="severity-pill" style={{ backgroundColor: getUrgencyColor(result.urgency) }}>
+              {getUrgencyLabel(result.urgency)}
+            </span>
+            <p className="section-text">
+              {aiResult?.severity ? `${t.severity as string}: ${aiResult.severity}` : tStr(t, 'severitySummary', 'The AI assessed your symptoms and categorized the level of concern.')}
+            </p>
+          </div>
+        </section>
 
         {result.hasPregnancyAlert && (
           <div className="pregnancy-alert">
@@ -217,16 +271,10 @@ function ResultScreen({
           </button>
         )}
 
-        <ChatPanel
-          language={language}
-          pregnant={!!userInput.isPregnant}
-          contextSummary={result.explanation.slice(0, 120)}
-        />
-
         <AIChat
           language={language}
           pregnant={!!userInput.isPregnant}
-          contextSummary={`Risk Level: ${result.urgency}`}
+          summary={summaryData}
         />
 
         <div className="action-buttons">

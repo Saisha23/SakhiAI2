@@ -44,7 +44,6 @@ function HomeScreen({ language, onLanguageChange, onStart }: HomeScreenProps) {
 
         <div className="disclaimer">
           <p>{t.disclaimer as string}</p>
-          <p className="pregnancy-disclaimer">{t.pregnancyDisclaimer as string}</p>
         </div>
       </div>
     </div>

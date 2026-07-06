@@ -2,10 +2,11 @@
 .ai-chat-container {
   display: flex;
   flex-direction: column;
-  height: 600px;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-height: 520px;
+  max-height: 700px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fdf2f8 0%, #f7d9f0 100%);
+  box-shadow: 0 20px 60px rgba(156, 39, 176, 0.12);
   overflow: hidden;
   margin-top: 16px;
 }
@@ -46,6 +47,57 @@
 .chat-clear-btn:hover,
 .close-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.chat-summary-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(156, 39, 176, 0.15);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px;
+  box-shadow: 0 10px 24px rgba(156, 39, 176, 0.08);
+}
+
+.chat-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.summary-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.summary-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.summary-pill {
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(156, 39, 176, 0.12);
+}
+
+.summary-assessment {
+  margin-top: 16px;
+}
+
+.summary-assessment p {
+  color: #4b4b4b;
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .chat-context-box {

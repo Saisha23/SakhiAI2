@@ -146,8 +146,12 @@ function SymptomSelectionScreen({
           </div>
 
           {isPregnant && (
-            <div className="pregnancy-disclaimer-box">
-              ⚠️ {t.pregnancyDisclaimer as string}
+            <div className="pregnancy-alert-card">
+              <div className="alert-icon">⚠️</div>
+              <div>
+                <div className="alert-title">{t.pregnancyAlert as string}</div>
+                <div className="alert-text">{t.pregnancyWarning as string}</div>
+              </div>
             </div>
           )}
 

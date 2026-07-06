@@ -2,21 +2,28 @@ import { useState, useEffect, useRef } from 'react';
 import type { ChatMessage, Language } from '../types';
 import { sendChatMessage } from '../utils/api';
 import { useChatHistory } from '../hooks/useChatHistory';
-import { useVoiceInput } from '../hooks/useVoiceInput';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { getT, tStr } from '../utils/i18n';
+import VoiceInputButton from './VoiceInputButton';
+
+interface SummaryData {
+  symptoms: string[];
+  assessment: string;
+  riskLabel: string;
+  riskColor: string;
+}
 
 interface AIChatProps {
   language: Language;
   pregnant: boolean;
-  contextSummary?: string;
+  summary?: SummaryData;
   onClose?: () => void;
 }
 
 export default function AIChat({
   language,
   pregnant,
-  contextSummary,
+  summary,
   onClose,
 }: AIChatProps) {
   const t = getT(language);
@@ -28,7 +35,6 @@ export default function AIChat({
   const bottomRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { isListening, isSupported: voiceSupported } = useVoiceInput(language);
   const { isSpeaking, isSupported: ttsSupported, speak, stop } = useTextToSpeech(language);
 
   useEffect(() => {
@@ -129,9 +135,21 @@ export default function AIChat({
         </div>
       </div>
 
-      {contextSummary && (
-        <div className="chat-context-box">
-          <strong>Context:</strong> {contextSummary}
+      {summary && (
+        <div className="chat-summary-card">
+          <div className="chat-summary-row">
+            <div>
+              <div className="summary-label">{tStr(t, 'selectedSymptoms', 'Selected symptoms')}</div>
+              <div className="summary-text">{summary.symptoms.length > 0 ? summary.symptoms.join(', ') : tStr(t, 'noSymptoms', 'No symptoms selected')}</div>
+            </div>
+            <div className="summary-pill" style={{ backgroundColor: summary.riskColor }}>
+              {summary.riskLabel}
+            </div>
+          </div>
+          <div className="summary-assessment">
+            <div className="summary-label">{tStr(t, 'aiAssessment', 'AI assessment')}</div>
+            <p>{summary.assessment}</p>
+          </div>
         </div>
       )}
 
@@ -205,31 +223,11 @@ export default function AIChat({
             disabled={loading}
             type="text"
           />
-          {voiceSupported && (
-            <div className="voice-input-wrapper">
-              <label className="voice-label" htmlFor="voice-input">
-                <input
-                  id="voice-input"
-                  type="checkbox"
-                  checked={isListening}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      // Voice input handled by useVoiceInput hook
-                    }
-                  }}
-                  style={{ display: 'none' }}
-                />
-                <span
-                  className={`voice-toggle-btn ${isListening ? 'active' : ''}`}
-                  onClick={() => {
-                    // Toggle handled by component logic
-                  }}
-                >
-                  🎤
-                </span>
-              </label>
-            </div>
-          )}
+          <VoiceInputButton
+            language={language}
+            label={tStr(t, 'voiceInput', 'Voice')}
+            onTranscript={(text) => setInput((prev) => (prev ? `${prev} ${text}` : text))}
+          />
           <button
             className="primary-btn send-btn"
             onClick={handleSend}
