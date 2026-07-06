@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: sakhi-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port 8000
+    healthCheckPath: /health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: RATE_LIMIT_PER_MINUTE
+        value: 60
+      - key: CORS_ORIGINS
+        value: https://sakhi-frontend.vercel.app,http://localhost:5173
+    rootDir: backend
+
+  - type: web
+    name: sakhi-frontend
+    runtime: node
+    buildCommand: cd ../project && npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://sakhi-backend.onrender.com
+    rootDir: .

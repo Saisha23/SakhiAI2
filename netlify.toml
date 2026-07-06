@@ -1,0 +1,14 @@
+[build]
+  command = "cd project && npm install && npm run build"
+  publish = "project/dist"
+
+[context.production]
+  command = "cd project && npm install && npm run build"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  VITE_API_URL = ""

@@ -1,0 +1,73 @@
+# Environment variables (NEVER COMMIT SECRET KEYS!)
+.env
+.env.local
+.env.*.local
+*.env
+backend/.env
+project/.env
+project/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Root virtual environment
+.venv/
+
+# Duplicate local copy
+SakhiAI-main/
+
+# Backend
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/.pytest_cache/
+backend/htmlcov/
+backend/.coverage
+backend/dist/
+backend/build/
+backend/*.egg-info/
+
+# Frontend
+project/node_modules/
+project/dist/
+project/build/
+project/.next/
+project/out/
+project/.turbo/
+project/coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.parcel-cache/
+
+# Production builds
+dist/
+build/
+
+# Test coverage
+coverage/
+.nyc_output/

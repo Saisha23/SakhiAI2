@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd project && npm install && npm run build",
+  "outputDirectory": "project/dist",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": {
+      "description": "Backend API URL (e.g., https://sakhi-backend.onrender.com)"
+    }
+  },
+  "envPrefix": "VITE_"
+}
