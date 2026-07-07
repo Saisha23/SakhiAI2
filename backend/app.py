@@ -64,18 +64,11 @@ ALLOWED_ORIGINS = os.getenv(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=[
-    "GET",
-    "POST",
-    "OPTIONS",
-],
-    allow_headers=[
-    "Content-Type",
-    "Authorization",
-    "Accept",
-],
+    allow_origins=[],
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 logger.info(f"CORS allowed origins: {ALLOWED_ORIGINS}")
